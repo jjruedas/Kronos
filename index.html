@@ -3,23 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kronos</title>
+    <title>Kronos Pomodoro Timer</title>
     <style>
         body {
-            background-color: #121212; /* Dark background */
-            color: #FFA500; /* Orange color for text */
+            background: linear-gradient(#0a0e27, #1a1f3a);
+            color: #1E90FF;
             font-family: Arial, sans-serif;
         }
-        h1, h2, h3, p {
-            color: #1E90FF; /* Blue color for headings */
+        button {
+            background-color: #0066CC;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        a {
-            color: #1E90FF; /* Blue links */
+        button:hover {
+            background-color: #005BB5;
+        }
+        .badge {
+            background-color: #FFA500;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .accent {
+            color: #FF6347;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to Kronos</h1>
-    <p>This is an updated index page with a new color scheme.</p>
+    <h1>Kronos Pomodoro Timer</h1>
+    <div class="timer">
+        <h2 id="timer">25:00</h2>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+    </div>
+    <div class="badges">
+        <span class="badge">Focus Time</span>
+        <span class="badge accent">Break Time</span>
+    </div>
+    <script>
+        // JavaScript for Pomodoro Timer functionality
+        let timer;
+        let isRunning = false;
+        let timeLeft = 1500; // 25 minutes in seconds
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        document.getElementById('start').addEventListener('click', () => {
+            if (!isRunning) {
+                isRunning = true;
+                timer = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                    }
+                }, 1000);
+            }
+        });
+
+        document.getElementById('stop').addEventListener('click', () => {
+            if (isRunning) {
+                clearInterval(timer);
+                isRunning = false;
+            }
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+            clearInterval(timer);
+            timeLeft = 1500;
+            updateTimerDisplay();
+            isRunning = false;
+        });
+
+        updateTimerDisplay();
+    </script>
 </body>
 </html>
