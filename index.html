@@ -1,1 +1,96 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Kronos Pomodoro Timer</title>\n    <style>\n        body { font-family: Arial, sans-serif; background-color: #121212; color: white; margin: 0; padding: 20px; }\n        h1 { color: #ff9800; }\n        .timer { font-size: 48px; color: #2196f3; }\n        .button { padding: 10px; margin: 5px; background-color: #2196f3; border: none; color: white; cursor: pointer; }\n        .button:hover { background-color: #ff9800; }\n        .sound { display: none; }\n    </style>\n</head>\n<body>\n    <h1>Kronos Pomodoro Timer</h1>\n    <div class="timer">25:00</div>\n    <button class="button" id="start">Start</button>\n    <button class="button" id="pause">Pause</button>\n    <button class="button" id="reset">Reset</button>\n    <div>\n        <label for="language">Language:</label>\n        <select id="language">\n            <option value="ca">Català</option>\n            <option value="es">Español</option>\n            <option value="en">English</option>\n        </select>\n    </div>\n    <audio class="sound" id="forest" src="sounds/forest.mp3"></audio>\n    <audio class="sound" id="rain" src="sounds/rain.mp3"></audio>\n    <audio class="sound" id="storm" src="sounds/storm.mp3"></audio>\n    <script>\n        let timer;\n        let isRunning = false;\n        let totalTime = 1500; // 25 minutes\n        let breakTime = 300; // 5 minutes\n        let longBreakTime = 900; // 15 minutes\n        let cycles = 0;\n        const timerDisplay = document.querySelector('.timer');\n        const startButton = document.getElementById('start');\n        const pauseButton = document.getElementById('pause');\n        const resetButton = document.getElementById('reset');\n        startButton.addEventListener('click', startTimer);\n        pauseButton.addEventListener('click', pauseTimer);\n        resetButton.addEventListener('click', resetTimer);\n        function startTimer() {\n            if (!isRunning) {\n                isRunning = true;\n                timer = setInterval(() => {\n                    totalTime--;;\n                    if (totalTime <= 0) {\n                        cycles++;\n                        totalTime = (cycles % 4 === 0) ? longBreakTime : breakTime;\n                        // Play sound for break\n                        document.getElementById('forest').play();\n                    }\n                    // Update timer display\n                    updateDisplay();\n                }, 1000);\n            }\n        }\n        function pauseTimer() {\n            isRunning = false;\n            clearInterval(timer);\n        }\n        function resetTimer() {\n            isRunning = false;\n            clearInterval(timer);\n            cycles = 0;\n            totalTime = 1500;\n            updateDisplay();\n        }\n        function updateDisplay() {\n            const minutes = Math.floor(totalTime / 60);\n            const seconds = totalTime % 60;\n            timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;\n        }\n    </script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kronos Pomodoro Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #timer {
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="timer">
+        <h1>Kronos Pomodoro Timer</h1>
+        <div id="time">
+            <h2>Time Left: <span id="time-left">25:00</span></h2>
+            <button id="start" class="pulse">Start</button>
+            <button id="stop">Stop</button>
+        </div>
+        <canvas id="progressChart" width="200" height="200"></canvas>
+    </div>
+    <script>
+        const startButton = document.getElementById('start');
+        const stopButton = document.getElementById('stop');
+        const timeLeftDisplay = document.getElementById('time-left');
+        const progressChart = document.getElementById('progressChart');
+        const ctx = progressChart.getContext('2d');
+
+        let timer;
+        let timeLeft = 1500;
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    // Display completion animation
+                    ctx.clearRect(0, 0, progressChart.width, progressChart.height);
+                    drawChart(1);
+                } else {
+                    timeLeft--;
+                    updateDisplay();
+                    drawChart(1 - timeLeft / 1500);
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
+            timeLeft = 1500;
+            updateDisplay();
+            ctx.clearRect(0, 0, progressChart.width, progressChart.height);
+            drawChart(0);
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timeLeftDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function drawChart(percentage) {
+            ctx.clearRect(0, 0, progressChart.width, progressChart.height);
+            ctx.beginPath();
+            ctx.arc(100, 100, 90, -0.5 * Math.PI, (percentage * 2 * Math.PI) - 0.5 * Math.PI);
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = '#4CAF50';
+            ctx.stroke();
+        }
+
+        startButton.addEventListener('click', startTimer);
+        stopButton.addEventListener('click', stopTimer);
+    </script>
+</body>
+</html>
