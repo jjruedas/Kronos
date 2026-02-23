@@ -3,61 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kronos Pomodoro Timer</title>
+    <title>Pomodoro Timer</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f4;
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            background-color: #f4f4f4; 
         }
-        #timer {
-            font-size: 48px;
-            margin-bottom: 20px;
+        .timer { 
+            font-size: 48px; 
+            margin: 20px; 
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        .controls { 
+            display: flex; 
+            justify-content: center; 
+        }
+        button { 
+            margin: 10px; 
+            padding: 10px 20px; 
+            font-size: 24px; 
         }
     </style>
 </head>
 <body>
-    <div id="timer">25:00</div>
-    <button id="startButton">Start</button>
+    <h1>Pomodoro Timer</h1>
+    <div class="timer" id="timer">25:00</div>
+    <div class="controls">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+    </div>
     <script>
         let timer;
         let isRunning = false;
-        let timeLeft = 1500; // 25 minutes in seconds
+        let seconds = 1500;
+        const timerDisplay = document.getElementById('timer');
 
-        function updateTimer() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        function updateDisplay() {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            timerDisplay.textContent = String(minutes).padStart(2, '0') + ':' + String(remainingSeconds).padStart(2, '0');
+        }
 
-            if (timeLeft > 0) {
-                timeLeft--;
-            } else {
-                clearInterval(timer);
-                isRunning = false;
-                document.getElementById('startButton').textContent = 'Start';
-                alert('Pomodoro Complete!');
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timer = setInterval(() => {
+                    seconds--;
+                    updateDisplay();
+                    if (seconds <= 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                        // Play ambient sound here
+                    }
+                }, 1000);
             }
         }
 
-        document.getElementById('startButton').addEventListener('click', () => {
-            if (!isRunning) {
-                timer = setInterval(updateTimer, 1000);
-                isRunning = true;
-                document.getElementById('startButton').textContent = 'Pause';
-            } else {
-                clearInterval(timer);
-                isRunning = false;
-                document.getElementById('startButton').textContent = 'Start';
-            }
-        });
+        function stopTimer() {
+            clearInterval(timer);
+            isRunning = false;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            seconds = 1500;
+            updateDisplay();
+        }
+
+        document.getElementById('start').onclick = startTimer;
+        document.getElementById('stop').onclick = stopTimer;
+        document.getElementById('reset').onclick = resetTimer;
+
+        updateDisplay();
     </script>
 </body>
 </html>
