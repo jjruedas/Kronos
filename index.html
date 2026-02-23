@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kronos Pomodoro Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #timer {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="timer">25:00</div>
+    <button id="startButton">Start</button>
+    <script>
+        let timer;
+        let isRunning = false;
+        let timeLeft = 1500; // 25 minutes in seconds
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                clearInterval(timer);
+                isRunning = false;
+                document.getElementById('startButton').textContent = 'Start';
+                alert('Pomodoro Complete!');
+            }
+        }
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            if (!isRunning) {
+                timer = setInterval(updateTimer, 1000);
+                isRunning = true;
+                document.getElementById('startButton').textContent = 'Pause';
+            } else {
+                clearInterval(timer);
+                isRunning = false;
+                document.getElementById('startButton').textContent = 'Start';
+            }
+        });
+    </script>
+</body>
+</html>
