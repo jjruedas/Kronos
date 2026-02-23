@@ -1,86 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            background-color: #f4f4f4; 
-        }
-        .timer { 
-            font-size: 48px; 
-            margin: 20px; 
-        }
-        .controls { 
-            display: flex; 
-            justify-content: center; 
-        }
-        button { 
-            margin: 10px; 
-            padding: 10px 20px; 
-            font-size: 24px; 
-        }
-    </style>
+    <title>Kronos Pomodoro Timer</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pomodoro Timer</h1>
-    <div class="timer" id="timer">25:00</div>
-    <div class="controls">
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
-        <button id="reset">Reset</button>
-    </div>
-    <script>
-        let timer;
-        let isRunning = false;
-        let seconds = 1500;
-        const timerDisplay = document.getElementById('timer');
-
-        function updateDisplay() {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            timerDisplay.textContent = String(minutes).padStart(2, '0') + ':' + String(remainingSeconds).padStart(2, '0');
-        }
-
-        function startTimer() {
-            if (!isRunning) {
-                isRunning = true;
-                timer = setInterval(() => {
-                    seconds--;
-                    updateDisplay();
-                    if (seconds <= 0) {
-                        clearInterval(timer);
-                        isRunning = false;
-                        // Play ambient sound here
-                    }
-                }, 1000);
-            }
-        }
-
-        function stopTimer() {
-            clearInterval(timer);
-            isRunning = false;
-        }
-
-        function resetTimer() {
-            clearInterval(timer);
-            isRunning = false;
-            seconds = 1500;
-            updateDisplay();
-        }
-
-        document.getElementById('start').onclick = startTimer;
-        document.getElementById('stop').onclick = stopTimer;
-        document.getElementById('reset').onclick = resetTimer;
-
-        updateDisplay();
-    </script>
+    <header>
+        <h1>Kronos: Помодоро Timer</h1>
+    </header>
+    <main>
+        <section id="timer">
+            <h2 id="timer-title">Timer</h2>
+            <div id="time">20:00</div>
+            <button id="start-btn">Start</button>
+            <button id="reset-btn">Reset</button>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Kronos</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
